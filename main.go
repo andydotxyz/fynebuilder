@@ -19,7 +19,7 @@ var (
 )
 
 func buildLibrary() fyne.CanvasObject {
-	widgets := []string{"Button", "Icon", "Label", "Entry"}
+	widgets := []string{"Card", "Button", "Icon", "Label", "Entry"}
 
 	var selected fyne.CanvasObject
 	list := widget.NewList(func() int {
@@ -31,6 +31,8 @@ func buildLibrary() fyne.CanvasObject {
 	})
 	list.OnSelected = func(i widget.ListItemID) {
 		switch widgets[i] {
+		case "Card":
+			selected = widget.NewCard("Title", "Subtitle", fyne.NewContainer(widget.NewLabel("Content here")))
 		case "Button":
 			selected = widget.NewButton("Button", func() {})
 		case "Icon":
