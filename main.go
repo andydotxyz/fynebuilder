@@ -32,7 +32,7 @@ func buildLibrary() fyne.CanvasObject {
 	list.OnSelected = func(i widget.ListItemID) {
 		switch widgets[i] {
 		case "Card":
-			selected = widget.NewCard("Title", "Subtitle", fyne.NewContainer(widget.NewLabel("Content here")))
+			selected = widget.NewCard("Title", "Subtitle", widget.NewLabel("Content here"))
 		case "Button":
 			selected = widget.NewButton("Button", func() {})
 		case "Icon":
@@ -144,9 +144,6 @@ func choose(o fyne.CanvasObject) {
 }
 
 func main() {
-
-	generateRepo()
-
 	a := app.NewWithID("xyz.andy.fynebuilder")
 	w := a.NewWindow("Fyne Builder")
 	w.SetContent(buildUI())
