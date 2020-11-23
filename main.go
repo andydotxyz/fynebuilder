@@ -118,6 +118,18 @@ func choose(o fyne.CanvasObject) {
 			obj.SetText(text)
 		}
 		items = []fyne.CanvasObject{widget.NewForm(widget.NewFormItem("Text", entry))}
+	case *widget.Card:
+		title := widget.NewEntry()
+		title.SetText(obj.Title)
+		title.OnChanged = func(text string) {
+			obj.SetTitle(text)
+		}
+		subtitle := widget.NewEntry()
+		subtitle.SetText(obj.Subtitle)
+		subtitle.OnChanged = func(text string) {
+			obj.SetSubTitle(text)
+		}
+		items = []fyne.CanvasObject{widget.NewForm(widget.NewFormItem("Title", title), widget.NewFormItem("Title", subtitle))}
 	case *widget.Button:
 		entry := widget.NewEntry()
 		entry.SetText(obj.Text)
