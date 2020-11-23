@@ -137,7 +137,7 @@ func choose(o fyne.CanvasObject) {
 			obj.SetText(text)
 		}
 		items = []fyne.CanvasObject{widget.NewForm(widget.NewFormItem("Text", entry),
-			widget.NewFormItem("Icon", widget.NewSelect(IconNames, func(selected string) { obj.SetIcon(Icons[selected]) })))}
+			widget.NewFormItem("Icon", widget.NewSelect(iconNames, func(selected string) { obj.SetIcon(icons[selected]) })))}
 	}
 	paletteList.Children = items
 	paletteList.Refresh()
@@ -145,7 +145,7 @@ func choose(o fyne.CanvasObject) {
 
 func main() {
 
-	GenerateRepo()
+	generateRepo()
 
 	a := app.NewWithID("xyz.andy.fynebuilder")
 	w := a.NewWindow("Fyne Builder")

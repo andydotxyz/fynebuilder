@@ -7,7 +7,7 @@ import (
 
 // Icons Has the list of icons from the standard theme.
 // ToDo: Will have to look for a way to sync the list from `fyne_demo`
-var Icons = map[string]fyne.Resource{
+var icons = map[string]fyne.Resource{
 	"CancelIcon":        theme.CancelIcon(),
 	"ConfirmIcon":       theme.ConfirmIcon(),
 	"DeleteIcon":        theme.DeleteIcon(),
@@ -103,13 +103,13 @@ var Icons = map[string]fyne.Resource{
 }
 
 // IconNames Gets the list of the names of the icons available
-var IconNames = make([]string, len(Icons))
+var iconNames = make([]string, len(icons))
 
 // GenerateRepo creates all the repo variables. For example, Adds all the icon names to the IconNames variable
-func GenerateRepo() {
+func generateRepo() {
 	i := 0
-	for k := range Icons {
-		IconNames[i] = k
+	for k := range icons {
+		iconNames[i] = k
 		i++
 	}
 }
