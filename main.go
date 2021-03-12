@@ -83,7 +83,28 @@ func buildUI() fyne.CanvasObject {
 			log.Println("TODO")
 		}),
 		widget.NewToolbarAction(theme.MailForwardIcon(), func() {
-			code := fmt.Sprintf("%#v", overlay)
+			packagesList := []string{"", "/app", "/canvas", "/data/binding", "/layout", "/theme", "/widget"} //ToDo: Will fetch it dynamically later
+			for i := 0; i < len(packagesList); i++ {
+				packagesList[i] = fmt.Sprintf(`"fyne.io/fyne/v2%s"`, packagesList[i])
+			}
+			code := fmt.Sprintf(`
+package main
+import (
+	%s
+)
+
+func main() {
+	myApp := app.New()
+	myWindow := myApp.NewWindow("Hello")
+	myWindow.SetContent(
+		%#v,
+	)
+
+	myWindow.ShowAndRun()
+}
+			`,
+				strings.Join(packagesList, "\n"),
+				overlay)
 			fmt.Println(code)
 		}))
 
