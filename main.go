@@ -5,6 +5,7 @@ import (
 	"log"
 	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"fyne.io/fyne/v2"
@@ -98,15 +99,55 @@ func buildUI() fyne.CanvasObject {
 			simpleProps3 := regexp.MustCompile(`([{ ]+)([a-z][a-zA-Z]*:[ ]*[a-z.A-Z]*{[a-zA-Z:0-9., ]+}[,]*)`)
 			simpleProps4 := regexp.MustCompile(`([{ ]+)([a-z][a-zA-Z]*:[ ]*[a-zA-Z0-9\.\*]*\([0-9a-zA-Z]+\)[,]*)`)
 			simpleProps5 := regexp.MustCompile(`([{ ]+)([a-z][a-zA-Z]*:[ ]*\([a-zA-Z0-9\.\*]*\)\([0-9a-zA-Z]+\)[,]*)`)
+			simpleProps6 := regexp.MustCompile(`([{ ]+)([a-z][a-zA-Z]*:[ ]*\[\][a-z]+\([a-zA-Z0-9, "]+\)[,]*)`)
+			simpleProps7 := regexp.MustCompile(`([{ ]+)([a-z][a-zA-Z]*:[ ]*\(func\([a-zA-Z.]+\)\)\([0-9a-zA-Z]+\)[,]*)`)
+			simpleProps8 := regexp.MustCompile(`([{ ]+)([a-z][a-zA-Z]*:[ ]*func\(\){fmt.Println\("Hello there"\)}[,]*)`)
+			simpleProps9 := regexp.MustCompile(`([{ ]+)([a-z][a-zA-Z]*:[ ]*map\[[a-z]+\][a-z0-9]+\([a-zA-Z0-9, "]+\)[,])*`)
 
-			for areSimplePropsPresent.MatchString(code) {
-				code = simpleProps1.ReplaceAllString(code, "$1")
-				code = simpleProps2.ReplaceAllString(code, "$1$3")
-				code = simpleProps3.ReplaceAllString(code, "$1")
-				code = simpleProps4.ReplaceAllString(code, "$1")
-				code = simpleProps5.ReplaceAllString(code, "$1")
+			// for areSimplePropsPresent.MatchString(code) {
+			code = simpleProps1.ReplaceAllString(code, "$1")
+			code = simpleProps2.ReplaceAllString(code, "$1$3")
+			code = simpleProps3.ReplaceAllString(code, "$1")
+			code = simpleProps4.ReplaceAllString(code, "$1")
+			code = simpleProps5.ReplaceAllString(code, "$1")
+			code = simpleProps6.ReplaceAllString(code, "$1")
+			code = simpleProps7.ReplaceAllString(code, "$1")
+			code = simpleProps8.ReplaceAllString(code, "$1")
+			code = simpleProps9.ReplaceAllString(code, "$1")
+
+			code = simpleProps1.ReplaceAllString(code, "$1")
+			code = simpleProps2.ReplaceAllString(code, "$1$3")
+			code = simpleProps3.ReplaceAllString(code, "$1")
+			code = simpleProps4.ReplaceAllString(code, "$1")
+			code = simpleProps5.ReplaceAllString(code, "$1")
+			code = simpleProps6.ReplaceAllString(code, "$1")
+			code = simpleProps7.ReplaceAllString(code, "$1")
+			code = simpleProps8.ReplaceAllString(code, "$1")
+			code = simpleProps9.ReplaceAllString(code, "$1")
+
+			code = simpleProps1.ReplaceAllString(code, "$1")
+			code = simpleProps2.ReplaceAllString(code, "$1$3")
+			code = simpleProps3.ReplaceAllString(code, "$1")
+			code = simpleProps4.ReplaceAllString(code, "$1")
+			code = simpleProps5.ReplaceAllString(code, "$1")
+			code = simpleProps6.ReplaceAllString(code, "$1")
+			code = simpleProps7.ReplaceAllString(code, "$1")
+			code = simpleProps8.ReplaceAllString(code, "$1")
+			code = simpleProps9.ReplaceAllString(code, "$1")
+			// }
+			fmt.Println(areSimplePropsPresent.MatchString(code))
+
+			iconReplace := regexp.MustCompile(`\(\*theme.ThemedResource\)\((0x[a-zA-Z0-9]+)\)`)
+			fmt.Println("=================")
+
+			cancelNewAddr, _ := strconv.ParseUint(fmt.Sprintf("%p", theme.DefaultTheme().Icon("cancel")), 0, 64)
+
+			for _, v := range iconReplace.FindAllStringSubmatch(code, -1) {
+				iconAddr, _ := strconv.ParseUint(v[1], 0, 64)
+				strAddr := "0x" + strconv.FormatUint(cancelAddr+iconAddr-cancelNewAddr, 16)
+				// fmt.Println(v, strings.Index(code, v[0]), iconAddr, strAddr, iconReverse[strAddr])
+				code = strings.Replace(code, v[0], "theme."+iconReverse[strAddr]+"()", 1)
 			}
-			// fmt.Println(areSimplePropsPresent.MatchString(code))
 
 			// baseWidgetRegex := regexp.MustCompile(`BaseWidget:widget.BaseWidget{size:fyne.Size{Width:[0-9]+, Height:[0-9]+}, position:fyne.Position{X:[0-9]+, Y:[0-9]+}, Hidden:false, impl:\(\*[a-zA-Z]+\.[a-zA-Z]+\)\([0-9a-zA-Z]+\), propertyLock:sync.RWMutex{w:sync.Mutex{state:[0-9]+, sema:[0-9a-zA-Z]+}, writerSem:[0-9a-zA-Z]+, readerSem:[0-9a-zA-Z]+, readerCount:[0-9]+, readerWait:[0-9]+}}, `)
 			// code = baseWidgetRegex.ReplaceAllString(code, "")
@@ -183,6 +224,8 @@ func main() {
 func previewUI() fyne.CanvasObject {
 	return container.New(layout.NewVBoxLayout(),
 		widget.NewIcon(theme.ContentAddIcon()),
+		widget.NewIcon(theme.ContentClearIcon()),
+		widget.NewIcon(theme.ContentRemoveIcon()),
 		widget.NewLabel("label"),
 		widget.NewButton("Button", func() {}))
 }
