@@ -135,7 +135,6 @@ func reverseIconMap() map[string]string {
 		}
 		s := fmt.Sprintf("%p", v)
 		iconReverseFromData[s] = k
-		fmt.Println(s, k, v)
 	}
 	return iconReverseFromData
 }
