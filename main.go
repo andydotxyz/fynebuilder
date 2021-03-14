@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"reflect"
+	"regexp"
 	"strings"
 
 	"fyne.io/fyne/v2"
@@ -83,11 +84,34 @@ func buildUI() fyne.CanvasObject {
 			log.Println("TODO")
 		}),
 		widget.NewToolbarAction(theme.MailForwardIcon(), func() {
-			packagesList := []string{"", "/app", "/canvas", "/data/binding", "/layout", "/theme", "/widget"} //ToDo: Will fetch it dynamically later
+			code := fmt.Sprintf("%#v", overlay)
+
+			layoutReplace := regexp.MustCompile(`(layout.[a-zA-Z]+)`)
+			code = layoutReplace.ReplaceAllString(code, "${1}Layout") // ToDo: should remove this line once the right layout is picked
+
+			areSimplePropsPresent := regexp.MustCompile(`[{ ]+[a-z][a-zA-Z]*:`)
+			simpleProps1 := regexp.MustCompile(`([{ ]+)([a-z][a-zA-Z]*:[a-zA-Z0-9]*,)`)
+			simpleProps2 := regexp.MustCompile(`([{ ]+)([a-z][a-zA-Z]*:[a-zA-Z0-9]*)([},]+)`)
+			simpleProps3 := regexp.MustCompile(`([{ ]+)([a-z][a-zA-Z]*:[ ]*[a-z.A-Z]*{[a-zA-Z:0-9., ]+}[,]*)`)
+			simpleProps4 := regexp.MustCompile(`([{ ]+)([a-z][a-zA-Z]*:[ ]*[a-zA-Z0-9\.\*]*\([0-9a-zA-Z]+\)[,]*)`)
+			simpleProps5 := regexp.MustCompile(`([{ ]+)([a-z][a-zA-Z]*:[ ]*\([a-zA-Z0-9\.\*]*\)\([0-9a-zA-Z]+\)[,]*)`)
+
+			for areSimplePropsPresent.MatchString(code) {
+				code = simpleProps1.ReplaceAllString(code, "$1")
+				code = simpleProps2.ReplaceAllString(code, "$1$3")
+				code = simpleProps3.ReplaceAllString(code, "$1")
+				code = simpleProps4.ReplaceAllString(code, "$1")
+				code = simpleProps5.ReplaceAllString(code, "$1")
+			}
+			// fmt.Println(areSimplePropsPresent.MatchString(code))
+
+			// baseWidgetRegex := regexp.MustCompile(`BaseWidget:widget.BaseWidget{size:fyne.Size{Width:[0-9]+, Height:[0-9]+}, position:fyne.Position{X:[0-9]+, Y:[0-9]+}, Hidden:false, impl:\(\*[a-zA-Z]+\.[a-zA-Z]+\)\([0-9a-zA-Z]+\), propertyLock:sync.RWMutex{w:sync.Mutex{state:[0-9]+, sema:[0-9a-zA-Z]+}, writerSem:[0-9a-zA-Z]+, readerSem:[0-9a-zA-Z]+, readerCount:[0-9]+, readerWait:[0-9]+}}, `)
+			// code = baseWidgetRegex.ReplaceAllString(code, "")
+			packagesList := []string{"", "/app", "/canvas", "/container", "/data/binding", "/layout", "/theme", "/widget"} //ToDo: Will fetch it dynamically later
 			for i := 0; i < len(packagesList); i++ {
 				packagesList[i] = fmt.Sprintf(`"fyne.io/fyne/v2%s"`, packagesList[i])
 			}
-			code := fmt.Sprintf(`
+			code = fmt.Sprintf(`
 package main
 import (
 	%s
@@ -97,14 +121,14 @@ func main() {
 	myApp := app.New()
 	myWindow := myApp.NewWindow("Hello")
 	myWindow.SetContent(
-		%#v,
+		%s,
 	)
 
 	myWindow.ShowAndRun()
 }
 			`,
 				strings.Join(packagesList, "\n"),
-				overlay)
+				code)
 			fmt.Println(code)
 		}))
 
