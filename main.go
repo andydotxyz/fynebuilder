@@ -89,6 +89,9 @@ func buildUI() fyne.CanvasObject {
 			layoutReplace := regexp.MustCompile(`(layout.[a-zA-Z]+)`)
 			code = layoutReplace.ReplaceAllString(code, "${1}Layout") // ToDo: should remove this line once the right layout is picked
 
+			funcReplace := regexp.MustCompile(`\(func\(\)\)\([a-zA-Z0-9]*\)`)
+			code = funcReplace.ReplaceAllString(code, "func(){fmt.Println(\"Hello there\")}")
+
 			areSimplePropsPresent := regexp.MustCompile(`[{ ]+[a-z][a-zA-Z]*:`)
 			simpleProps1 := regexp.MustCompile(`([{ ]+)([a-z][a-zA-Z]*:[a-zA-Z0-9]*,)`)
 			simpleProps2 := regexp.MustCompile(`([{ ]+)([a-z][a-zA-Z]*:[a-zA-Z0-9]*)([},]+)`)
