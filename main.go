@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"go/format"
 	"log"
 	"reflect"
 	"regexp"
@@ -156,6 +157,11 @@ func main() {
 			`,
 				strings.Join(packagesList, "\n"),
 				code)
+			formatted, err := format.Source([]byte(code))
+			if err != nil {
+				log.Fatal(err)
+			}
+			code = fmt.Sprintf("%s", formatted)
 			fmt.Println(code)
 		}))
 
