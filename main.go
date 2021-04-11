@@ -99,11 +99,11 @@ func buildUI() fyne.CanvasObject {
 			iconReplace := regexp.MustCompile(`\(\*theme.ThemedResource\)\((0x[a-zA-Z0-9]+)\)`)
 			// fmt.Println("=================")
 
-			cancelNewAddr, _ := strconv.ParseUint(fmt.Sprintf("%p", theme.DefaultTheme().Icon("cancel")), 0, 64)
+			cancelAddrFromTheme, _ := strconv.ParseUint(fmt.Sprintf("%p", theme.DefaultTheme().Icon("cancel")), 0, 64)
 
 			for _, v := range iconReplace.FindAllStringSubmatch(code, -1) {
 				iconAddr, _ := strconv.ParseUint(v[1], 0, 64)
-				strAddr := "0x" + strconv.FormatUint(cancelAddr+iconAddr-cancelNewAddr, 16)
+				strAddr := "0x" + strconv.FormatUint(cancelAddr+iconAddr-cancelAddrFromTheme, 16)
 				// fmt.Println(v, strings.Index(code, v[0]), iconAddr, strAddr, iconReverse[strAddr])
 				code = strings.Replace(code, v[0], "theme."+iconReverse[strAddr]+"()", 1)
 			}
