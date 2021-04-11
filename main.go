@@ -161,7 +161,7 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
-			code = fmt.Sprintf("%s", formatted)
+			code = string(formatted)
 			fmt.Println(code)
 		}))
 
