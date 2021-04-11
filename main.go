@@ -189,8 +189,6 @@ func main() {
 func previewUI() fyne.CanvasObject {
 	return container.New(layout.NewVBoxLayout(),
 		widget.NewIcon(theme.ContentAddIcon()),
-		widget.NewIcon(theme.ContentClearIcon()),
-		widget.NewIcon(theme.ContentRemoveIcon()),
 		widget.NewLabel("label"),
 		widget.NewButton("Button", func() {}))
 }
