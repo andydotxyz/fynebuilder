@@ -127,8 +127,6 @@ func extractIconNames() []string {
 // reverseIconMap returns all the list of icons and their addresses
 func reverseIconMap() map[string]string {
 	var iconReverseFromData = make(map[string]string, len(icons))
-	// i := 0
-	// var addr string
 	for k, v := range icons {
 		if k == "CancelIcon" {
 			cancelAddr, _ = strconv.ParseUint(fmt.Sprintf("%p", v), 0, 64)
