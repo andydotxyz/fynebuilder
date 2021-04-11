@@ -120,12 +120,13 @@ import (
 	%s
 )
 
+func makeUI() *fyne.Container {
+	return %s
+}
 func main() {
 	myApp := app.New()
 	myWindow := myApp.NewWindow("Hello")
-	myWindow.SetContent(
-		%s,
-	)
+	myWindow.SetContent(makeUI())
 
 	myWindow.ShowAndRun()
 }
