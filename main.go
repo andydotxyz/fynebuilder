@@ -2,11 +2,8 @@ package main
 
 import (
 	"fmt"
-	"go/format"
 	"log"
 	"reflect"
-	"regexp"
-	"strconv"
 	"strings"
 
 	"fyne.io/fyne/v2"
@@ -86,58 +83,7 @@ func buildUI() fyne.CanvasObject {
 			log.Println("TODO")
 		}),
 		widget.NewToolbarAction(theme.MailForwardIcon(), func() {
-			code := fmt.Sprintf("%#v", overlay)
-
-			layoutReplace := regexp.MustCompile(`(layout.[a-zA-Z]+)`)
-			code = layoutReplace.ReplaceAllString(code, "${1}Layout") // ToDo: should remove this line once the right layout is picked
-
-			funcReplace := regexp.MustCompile(`\(func\(\)\)\([a-zA-Z0-9]*\)`)
-			code = funcReplace.ReplaceAllString(code, "func(){fmt.Println(\"Hello there\")}")
-
-			code = removeUnexportedProps(code)
-
-			iconReplace := regexp.MustCompile(`\(\*theme.ThemedResource\)\((0x[a-zA-Z0-9]+)\)`)
-			// fmt.Println("=================")
-
-			cancelAddrFromTheme, _ := strconv.ParseUint(fmt.Sprintf("%p", theme.DefaultTheme().Icon("cancel")), 0, 64)
-
-			for _, v := range iconReplace.FindAllStringSubmatch(code, -1) {
-				iconAddr, _ := strconv.ParseUint(v[1], 0, 64)
-				strAddr := "0x" + strconv.FormatUint(cancelAddr+iconAddr-cancelAddrFromTheme, 16)
-				// fmt.Println(v, strings.Index(code, v[0]), iconAddr, strAddr, iconReverse[strAddr])
-				code = strings.Replace(code, v[0], "theme."+iconReverse[strAddr]+"()", 1)
-			}
-
-			// baseWidgetRegex := regexp.MustCompile(`BaseWidget:widget.BaseWidget{size:fyne.Size{Width:[0-9]+, Height:[0-9]+}, position:fyne.Position{X:[0-9]+, Y:[0-9]+}, Hidden:false, impl:\(\*[a-zA-Z]+\.[a-zA-Z]+\)\([0-9a-zA-Z]+\), propertyLock:sync.RWMutex{w:sync.Mutex{state:[0-9]+, sema:[0-9a-zA-Z]+}, writerSem:[0-9a-zA-Z]+, readerSem:[0-9a-zA-Z]+, readerCount:[0-9]+, readerWait:[0-9]+}}, `)
-			// code = baseWidgetRegex.ReplaceAllString(code, "")
-			packagesList := []string{"", "/app", "/canvas", "/container", "/data/binding", "/layout", "/theme", "/widget"} //ToDo: Will fetch it dynamically later
-			for i := 0; i < len(packagesList); i++ {
-				packagesList[i] = fmt.Sprintf(`"fyne.io/fyne/v2%s"`, packagesList[i])
-			}
-			code = fmt.Sprintf(`
-package main
-import (
-	%s
-)
-
-func makeUI() *fyne.Container {
-	return %s
-}
-func main() {
-	myApp := app.New()
-	myWindow := myApp.NewWindow("Hello")
-	myWindow.SetContent(makeUI())
-
-	myWindow.ShowAndRun()
-}
-			`,
-				strings.Join(packagesList, "\n"),
-				code)
-			formatted, err := format.Source([]byte(code))
-			if err != nil {
-				log.Fatal(err)
-			}
-			code = string(formatted)
+			code := fmt.Sprintf("\tfunc makeUI() fyne.CanvasObject {\n\t\treturn %#v\n\t}", overlay)
 			fmt.Println(code)
 		}))
 
