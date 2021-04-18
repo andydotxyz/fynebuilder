@@ -122,6 +122,10 @@ var widgets = map[string]widgetInfo{
 				widget.NewFormItem("Text", entry1),
 				widget.NewFormItem("PlaceHolder", entry2)}
 		},
+		gostring: func(obj fyne.CanvasObject) string {
+			l := obj.(*widget.Entry)
+			return fmt.Sprintf("widget.Entry{Text: \"%s\", PlaceHolder: \"%s\"}", encodeDoubleQuote(l.Text), encodeDoubleQuote(l.PlaceHolder))
+		},
 	},
 	"*widget.Icon": {
 		name: "Icon",
@@ -255,6 +259,9 @@ var widgets = map[string]widgetInfo{
 			// entry := widget.NewEntry()
 			return []*widget.FormItem{}
 		},
+		gostring: func(obj fyne.CanvasObject) string {
+			return "widget.NewAccordion(\"widget.NewAccordionItem(\"Item 1\", widget.NewLabel(\"The content goes here\")), widget.NewAccordionItem(\"Item 2\", widget.NewLabel(\"Content part 2 goes here\")))"
+		},
 	},
 	"*widget.List": {
 		name: "List",
@@ -270,6 +277,13 @@ var widgets = map[string]widgetInfo{
 		edit: func(obj fyne.CanvasObject) []*widget.FormItem {
 			return []*widget.FormItem{}
 		},
+		gostring: func(obj fyne.CanvasObject) string {
+			return `widget.NewList(func() int { return len(myList) }, func() fyne.CanvasObject {
+				return container.New(layout.NewHBoxLayout(), widget.NewIcon(theme.DocumentIcon()), widget.NewLabel("Template Object"))
+			}, func(id widget.ListItemID, item fyne.CanvasObject) {
+				item.(*fyne.Container).Objects[1].(*widget.Label).SetText(myList[id])
+			})`
+		},
 	},
 	"*widget.Menu": {
 		name: "Menu",
@@ -280,6 +294,9 @@ var widgets = map[string]widgetInfo{
 		edit: func(obj fyne.CanvasObject) []*widget.FormItem {
 			return []*widget.FormItem{}
 		},
+		gostring: func(obj fyne.CanvasObject) string {
+			return "widget.NewMenu(fyne.NewMenu(\"Menu Name\", fyne.NewMenuItem(\"Item 1\", func() { fmt.Println(\"From Item 1\") }), fyne.NewMenuItem(\"Item 2\", func() { fmt.Println(\"From Item 2\") }), fyne.NewMenuItem(\"Item 3\", func() { fmt.Println(\"From Item 3\") })))"
+		},
 	},
 	"*widget.Form": {
 		name: "Form",
@@ -288,6 +305,9 @@ var widgets = map[string]widgetInfo{
 		},
 		edit: func(obj fyne.CanvasObject) []*widget.FormItem {
 			return []*widget.FormItem{}
+		},
+		gostring: func(obj fyne.CanvasObject) string {
+			return "widget.NewForm(widget.NewFormItem(\"Username\", widget.NewEntry()), widget.NewFormItem(\"Password\", widget.NewPasswordEntry()), widget.NewFormItem(\"\", container.NewGridWithColumns(2, widget.NewButton(\"Submit\", func() { fmt.Println(\"Form is submitted\") }), widget.NewButton(\"Cancel\", func() { fmt.Println(\"Form is Cancelled\") }))))"
 		},
 	},
 	"*widget.MultiLineEntry": {
@@ -315,6 +335,10 @@ var widgets = map[string]widgetInfo{
 			return []*widget.FormItem{
 				widget.NewFormItem("Placeholder", placeholder),
 				widget.NewFormItem("Value", value)}
+		},
+		gostring: func(obj fyne.CanvasObject) string {
+			mle := obj.(*widget.Entry)
+			return fmt.Sprintf("widget.MultiLineEntry{Text: \"%s\", PlaceHolder: \"%s\"}", encodeDoubleQuote(mle.Text), encodeDoubleQuote(mle.PlaceHolder))
 		},
 	},
 	"*widget.PasswordEntry": {
@@ -346,6 +370,10 @@ var widgets = map[string]widgetInfo{
 				// widget.NewFormItem("Hide password", placeholder),
 				widget.NewFormItem("PlaceHolder", placeholder)}
 		},
+		gostring: func(obj fyne.CanvasObject) string {
+			l := obj.(*widget.Entry)
+			return fmt.Sprintf("widget.MultiLineEntry{Text: \"%s\", PlaceHolder: \"%s\"}", encodeDoubleQuote(l.Text), encodeDoubleQuote(l.PlaceHolder))
+		},
 	},
 	"*widget.ProgressBar": {
 		name: "Progress Bar",
@@ -366,6 +394,10 @@ var widgets = map[string]widgetInfo{
 			return []*widget.FormItem{
 				widget.NewFormItem("Value", value)}
 		},
+		gostring: func(obj fyne.CanvasObject) string {
+			p := obj.(*widget.ProgressBar)
+			return fmt.Sprintf("widget.ProgressBar{Value: %f}", p.Value)
+		},
 	},
 	"*widget.Separator": {
 		// Separator's height(or width as you may call) and color come from the theme, so not sure if we can change the color and height here
@@ -375,6 +407,9 @@ var widgets = map[string]widgetInfo{
 		},
 		edit: func(obj fyne.CanvasObject) []*widget.FormItem {
 			return []*widget.FormItem{}
+		},
+		gostring: func(obj fyne.CanvasObject) string {
+			return "widget.NewSeparator()"
 		},
 	},
 	"*widget.Slider": {
@@ -398,6 +433,10 @@ var widgets = map[string]widgetInfo{
 			return []*widget.FormItem{
 				widget.NewFormItem("Value", val)}
 		},
+		gostring: func(obj fyne.CanvasObject) string {
+			slider := obj.(*widget.Slider)
+			return fmt.Sprintf("widget.Slider(Min:0, Max:100, Value:%f)", slider.Value)
+		},
 	},
 	"*widget.Table": {
 		name: "Table",
@@ -418,6 +457,21 @@ var widgets = map[string]widgetInfo{
 		},
 		edit: func(obj fyne.CanvasObject) []*widget.FormItem {
 			return []*widget.FormItem{}
+		},
+		gostring: func(obj fyne.CanvasObject) string {
+			return `widget.NewTable(func() (int, int) { return 3, 3 }, func() fyne.CanvasObject {
+				return widget.NewLabel("Cell 000, 000")
+			}, func(id widget.TableCellID, cell fyne.CanvasObject) {
+				label := cell.(*widget.Label)
+				switch id.Col {
+				case 0:
+					label.SetText(fmt.Sprintf("%d", id.Row+1))
+				case 1:
+					label.SetText("A longer cell")
+				default:
+					label.SetText(fmt.Sprintf("Cell %d, %d", id.Row+1, id.Col+1))
+				}
+			})`
 		},
 	},
 	"*widget.TextGrid": {
@@ -462,6 +516,22 @@ var widgets = map[string]widgetInfo{
 		},
 		edit: func(obj fyne.CanvasObject) []*widget.FormItem {
 			return []*widget.FormItem{}
+		},
+		gostring: func(obj fyne.CanvasObject) string {
+			return `widget.NewToolbar(
+				widget.NewToolbarAction(icons["FileIcon"], func() { fmt.Println("Clicked on FileIcon") }),
+				widget.NewToolbarSeparator(),
+				widget.NewToolbarAction(icons["HomeIcon"], func() { fmt.Println("Clicked on HomeIcon") }),
+				widget.NewToolbarSeparator(),
+				widget.NewToolbarAction(icons["DownloadIcon"], func() { fmt.Println("Clicked on DownloadIcon") }),
+				widget.NewToolbarSeparator(),
+				widget.NewToolbarAction(icons["ViewRefreshIcon"], func() { fmt.Println("Clicked on ViewRefreshIcon") }),
+				widget.NewToolbarAction(icons["NavigateBackIcon"], func() { fmt.Println("Clicked on NavigateBackIcon") }),
+				widget.NewToolbarAction(icons["NavigateNextIcon"], func() { fmt.Println("Clicked on NavigateNextIcon") }),
+				widget.NewToolbarAction(icons["MailSendIcon"], func() { fmt.Println("Clicked on MailSendIcon") }),
+				widget.NewToolbarSpacer(),
+				widget.NewToolbarAction(icons["HelpIcon"], func() { fmt.Println("Clicked on HelpIcon") }),
+			)`
 		},
 	},
 	"*widget.Tree": {
