@@ -40,6 +40,10 @@ var widgets = map[string]widgetInfo{
 					b.SetIcon(icons[selected])
 				}))}
 		},
+		gostring: func(obj fyne.CanvasObject) string {
+			b := obj.(*widget.Button)
+			return fmt.Sprintf("widget.NewButton(\"%s\", func() {})", b.Text)
+		},
 	},
 	"*widget.Hyperlink": {
 		name: "Hyperlink",
