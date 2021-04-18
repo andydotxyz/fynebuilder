@@ -94,6 +94,10 @@ var widgets = map[string]widgetInfo{
 				widget.NewFormItem("Title", title),
 				widget.NewFormItem("Subtitle", subtitle)}
 		},
+		gostring: func(obj fyne.CanvasObject) string {
+			c := obj.(*widget.Card)
+			return fmt.Sprintf("widget.NewCard(\"%s\", \"%s\", widget.NewLabel(\"Content here\")", c.Title, c.Subtitle)
+		},
 	},
 	"*widget.Entry": {
 		name: "Entry",
@@ -149,7 +153,7 @@ var widgets = map[string]widgetInfo{
 		},
 		gostring: func(obj fyne.CanvasObject) string {
 			l := obj.(*widget.Label)
-			return fmt.Sprintf("NewLabel(\"%s\")", l.Text)
+			return fmt.Sprintf("widget.NewLabel(\"%s\")", l.Text)
 		},
 	},
 	"*widget.Check": {
@@ -170,6 +174,10 @@ var widgets = map[string]widgetInfo{
 			return []*widget.FormItem{
 				widget.NewFormItem("Title", title),
 				widget.NewFormItem("isChecked", isChecked)}
+		},
+		gostring: func(obj fyne.CanvasObject) string {
+			c := obj.(*widget.Check)
+			return fmt.Sprintf("widget.NewCheck(\"%s\", func(b bool) {}", c.Text)
 		},
 	},
 	"*widget.RadioGroup": {
@@ -192,6 +200,14 @@ var widgets = map[string]widgetInfo{
 			return []*widget.FormItem{
 				widget.NewFormItem("Options", entry),
 				widget.NewFormItem("Initial Option", initialOption)}
+		},
+		gostring: func(obj fyne.CanvasObject) string {
+			r := obj.(*widget.RadioGroup)
+			var opts []string
+			for _, v := range r.Options {
+				opts = append(opts, strings.ReplaceAll(v, "\"", "\\\""))
+			}
+			return fmt.Sprintf("widget.NewRadioGroup([]string{%s}, func(s string) {})", "\""+strings.Join(opts, "\", \"")+"\"")
 		},
 	},
 	"*widget.Select": {
@@ -219,6 +235,14 @@ var widgets = map[string]widgetInfo{
 			return []*widget.FormItem{
 				widget.NewFormItem("Options", entry),
 				widget.NewFormItem("Initial Option", initialOption)}
+		},
+		gostring: func(obj fyne.CanvasObject) string {
+			s := obj.(*widget.Select)
+			var opts []string
+			for _, v := range s.Options {
+				opts = append(opts, strings.ReplaceAll(v, "\"", "\\\""))
+			}
+			return fmt.Sprintf("widget.NewSelect([]string{%s}, func(s string) {})", "\""+strings.Join(opts, "\", \"")+"\"")
 		},
 	},
 	"*widget.Accordion": {
@@ -412,6 +436,10 @@ var widgets = map[string]widgetInfo{
 			}
 			return []*widget.FormItem{
 				widget.NewFormItem("Text", entry)}
+		},
+		gostring: func(obj fyne.CanvasObject) string {
+			to := obj.(*widget.TextGrid)
+			return fmt.Sprintf("widget.NewTextGrid(\"%s\")", to.Text())
 		},
 	},
 	"*widget.Toolbar": {
