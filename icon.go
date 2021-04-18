@@ -1,9 +1,6 @@
 package main
 
 import (
-	"fmt"
-	"strconv"
-
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/theme"
 )
@@ -105,13 +102,8 @@ var icons = map[string]fyne.Resource{
 	"VolumeUp":   theme.VolumeUpIcon(),
 }
 
-// iconsReverse Contains the key value pair where the key is the address of the icon and the value is the name
-var iconReverse = reverseIconMap()
-
 // iconNames is an array with the list of names of all the icons
 var iconNames = extractIconNames()
-
-var cancelAddr uint64
 
 // extractIconNames returns all the list of names of all the icons from the hashmap `icons`
 func extractIconNames() []string {
@@ -122,17 +114,4 @@ func extractIconNames() []string {
 		i++
 	}
 	return iconNamesFromData
-}
-
-// reverseIconMap returns all the list of icons and their addresses
-func reverseIconMap() map[string]string {
-	var iconReverseFromData = make(map[string]string, len(icons))
-	for k, v := range icons {
-		if k == "CancelIcon" {
-			cancelAddr, _ = strconv.ParseUint(fmt.Sprintf("%p", v), 0, 64)
-		}
-		s := fmt.Sprintf("%p", v)
-		iconReverseFromData[s] = k
-	}
-	return iconReverseFromData
 }
