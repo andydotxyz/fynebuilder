@@ -42,6 +42,9 @@ var widgets = map[string]widgetInfo{
 		},
 		gostring: func(obj fyne.CanvasObject) string {
 			b := obj.(*widget.Button)
+			if b.Icon != nil {
+				return fmt.Sprintf("widget.NewButtonWithIcon(\"%s\", theme.%s(), func() {})", encodeDoubleQuote(b.Text), iconNameMap[b.Icon.Name()])
+			}
 			return fmt.Sprintf("widget.NewButton(\"%s\", func() {})", encodeDoubleQuote(b.Text))
 		},
 	},
