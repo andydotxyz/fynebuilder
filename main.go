@@ -63,6 +63,14 @@ func buildLibrary() fyne.CanvasObject {
 		if c, ok := current.(*overlayContainer); ok {
 			if selected != nil {
 				c.c.Objects = append(c.c.Objects, wrapContent(selected.create()))
+				var localPackageList = make(map[string]bool)
+				for _, v := range selected.pacakges {
+					localPackageList[v] = true
+				}
+				for k := range packageList {
+					localPackageList[k] = true
+				}
+				packageList = localPackageList
 				c.c.Refresh()
 			}
 			return
@@ -83,7 +91,8 @@ func buildUI() fyne.CanvasObject {
 			log.Println("TODO")
 		}),
 		widget.NewToolbarAction(theme.MailForwardIcon(), func() {
-			code := fmt.Sprintf("\tfunc makeUI() fyne.CanvasObject {\n\t\treturn %#v\n\t}", overlay)
+			packages := strings.Join(getPackages(), "\n\t\t")
+			code := fmt.Sprintf("\n\timport (\n\t\t%s\n\t)\n\n\tfunc makeUI() fyne.CanvasObject {\n\t\treturn %#v\n\t}", packages, overlay)
 			fmt.Println(code)
 		}))
 

@@ -19,6 +19,7 @@ type widgetInfo struct {
 	create   func() fyne.CanvasObject
 	edit     func(fyne.CanvasObject) []*widget.FormItem
 	gostring func(fyne.CanvasObject) string
+	pacakges []string
 }
 
 var widgets = map[string]widgetInfo{
@@ -47,6 +48,7 @@ var widgets = map[string]widgetInfo{
 			}
 			return fmt.Sprintf("widget.NewButton(\"%s\", func() {})", encodeDoubleQuote(b.Text))
 		},
+		pacakges: []string{"widget", "theme"},
 	},
 	"*widget.Hyperlink": {
 		name: "Hyperlink",
@@ -75,6 +77,7 @@ var widgets = map[string]widgetInfo{
 			link := obj.(*widget.Hyperlink)
 			return fmt.Sprintf("widget.NewHyperLink(\"%s\", \"%s\")", encodeDoubleQuote(link.Text), encodeDoubleQuote(link.URL.String()))
 		},
+		pacakges: []string{"widget"},
 	},
 	"*widget.Card": {
 		name: "Card",
@@ -101,6 +104,7 @@ var widgets = map[string]widgetInfo{
 			c := obj.(*widget.Card)
 			return fmt.Sprintf("widget.NewCard(\"%s\", \"%s\", widget.NewLabel(\"Content here\")", encodeDoubleQuote(c.Title), encodeDoubleQuote(c.Subtitle))
 		},
+		pacakges: []string{"widget"},
 	},
 	"*widget.Entry": {
 		name: "Entry",
@@ -129,6 +133,7 @@ var widgets = map[string]widgetInfo{
 			l := obj.(*widget.Entry)
 			return fmt.Sprintf("&widget.Entry{Text: \"%s\", PlaceHolder: \"%s\"}", encodeDoubleQuote(l.Text), encodeDoubleQuote(l.PlaceHolder))
 		},
+		pacakges: []string{"widget"},
 	},
 	"*widget.Icon": {
 		name: "Icon",
@@ -146,6 +151,7 @@ var widgets = map[string]widgetInfo{
 			i := obj.(*widget.Icon)
 			return fmt.Sprintf("theme.%s()", iconNameMap[i.Resource.Name()])
 		},
+		pacakges: []string{"theme"},
 	},
 	"*widget.Label": {
 		name: "Label",
@@ -166,6 +172,7 @@ var widgets = map[string]widgetInfo{
 			l := obj.(*widget.Label)
 			return fmt.Sprintf("widget.NewLabel(\"%s\")", encodeDoubleQuote(l.Text))
 		},
+		pacakges: []string{"widget"},
 	},
 	"*widget.Check": {
 		name: "CheckBox",
@@ -190,6 +197,7 @@ var widgets = map[string]widgetInfo{
 			c := obj.(*widget.Check)
 			return fmt.Sprintf("widget.NewCheck(\"%s\", func(b bool) {}", encodeDoubleQuote(c.Text))
 		},
+		pacakges: []string{"widget"},
 	},
 	"*widget.RadioGroup": {
 		name: "RadioGroup",
@@ -220,6 +228,7 @@ var widgets = map[string]widgetInfo{
 			}
 			return fmt.Sprintf("widget.NewRadioGroup([]string{%s}, func(s string) {})", "\""+strings.Join(opts, "\", \"")+"\"")
 		},
+		pacakges: []string{"widget"},
 	},
 	"*widget.Select": {
 		name: "Select",
@@ -255,6 +264,7 @@ var widgets = map[string]widgetInfo{
 			}
 			return fmt.Sprintf("widget.NewSelect([]string{%s}, func(s string) {})", "\""+strings.Join(opts, "\", \"")+"\"")
 		},
+		pacakges: []string{"widget"},
 	},
 	"*widget.Accordion": {
 		name: "Accordion",
@@ -269,6 +279,7 @@ var widgets = map[string]widgetInfo{
 		gostring: func(obj fyne.CanvasObject) string {
 			return "widget.NewAccordion(\"widget.NewAccordionItem(\"Item 1\", widget.NewLabel(\"The content goes here\")), widget.NewAccordionItem(\"Item 2\", widget.NewLabel(\"Content part 2 goes here\")))"
 		},
+		pacakges: []string{"widget"},
 	},
 	"*widget.List": {
 		name: "List",
@@ -291,6 +302,7 @@ var widgets = map[string]widgetInfo{
 				item.(*fyne.Container).Objects[1].(*widget.Label).SetText(myList[id])
 			})`
 		},
+		pacakges: []string{"widget", "fyne", "container", "layout", "theme"},
 	},
 	"*widget.Menu": {
 		name: "Menu",
@@ -304,6 +316,7 @@ var widgets = map[string]widgetInfo{
 		gostring: func(obj fyne.CanvasObject) string {
 			return "widget.NewMenu(fyne.NewMenu(\"Menu Name\", fyne.NewMenuItem(\"Item 1\", func() { fmt.Println(\"From Item 1\") }), fyne.NewMenuItem(\"Item 2\", func() { fmt.Println(\"From Item 2\") }), fyne.NewMenuItem(\"Item 3\", func() { fmt.Println(\"From Item 3\") })))"
 		},
+		pacakges: []string{"widget", "fyne", "fmt"},
 	},
 	"*widget.Form": {
 		name: "Form",
@@ -316,6 +329,7 @@ var widgets = map[string]widgetInfo{
 		gostring: func(obj fyne.CanvasObject) string {
 			return "widget.NewForm(widget.NewFormItem(\"Username\", widget.NewEntry()), widget.NewFormItem(\"Password\", widget.NewPasswordEntry()), widget.NewFormItem(\"\", container.NewGridWithColumns(2, widget.NewButton(\"Submit\", func() { fmt.Println(\"Form is submitted\") }), widget.NewButton(\"Cancel\", func() { fmt.Println(\"Form is Cancelled\") }))))"
 		},
+		pacakges: []string{"widget", "container", "fmt"},
 	},
 	"*widget.MultiLineEntry": {
 		name: "Multi Line Entry",
@@ -347,6 +361,7 @@ var widgets = map[string]widgetInfo{
 			mle := obj.(*widget.Entry)
 			return fmt.Sprintf("&widget.MultiLineEntry{Text: \"%s\", PlaceHolder: \"%s\"}", encodeDoubleQuote(mle.Text), encodeDoubleQuote(mle.PlaceHolder))
 		},
+		pacakges: []string{"widget"},
 	},
 	"*widget.PasswordEntry": {
 		name: "Password Entry",
@@ -381,6 +396,7 @@ var widgets = map[string]widgetInfo{
 			l := obj.(*widget.Entry)
 			return fmt.Sprintf("&widget.MultiLineEntry{Text: \"%s\", PlaceHolder: \"%s\"}", encodeDoubleQuote(l.Text), encodeDoubleQuote(l.PlaceHolder))
 		},
+		pacakges: []string{"widget"},
 	},
 	"*widget.ProgressBar": {
 		name: "Progress Bar",
@@ -405,6 +421,7 @@ var widgets = map[string]widgetInfo{
 			p := obj.(*widget.ProgressBar)
 			return fmt.Sprintf("&widget.ProgressBar{Value: %f}", p.Value)
 		},
+		pacakges: []string{"widget"},
 	},
 	"*widget.Separator": {
 		// Separator's height(or width as you may call) and color come from the theme, so not sure if we can change the color and height here
@@ -418,6 +435,7 @@ var widgets = map[string]widgetInfo{
 		gostring: func(obj fyne.CanvasObject) string {
 			return "widget.NewSeparator()"
 		},
+		pacakges: []string{"widget"},
 	},
 	"*widget.Slider": {
 		name: "Slider",
@@ -444,6 +462,7 @@ var widgets = map[string]widgetInfo{
 			slider := obj.(*widget.Slider)
 			return fmt.Sprintf("widget.NewSlider(Min:0, Max:100, Value:%f)", slider.Value)
 		},
+		pacakges: []string{"widget"},
 	},
 	"*widget.Table": {
 		name: "Table",
@@ -480,6 +499,7 @@ var widgets = map[string]widgetInfo{
 				}
 			})`
 		},
+		pacakges: []string{"widget", "fyne", "fmt"},
 	},
 	"*widget.TextGrid": {
 		name: "Text Grid",
@@ -502,6 +522,7 @@ var widgets = map[string]widgetInfo{
 			to := obj.(*widget.TextGrid)
 			return fmt.Sprintf("widget.NewTextGrid(\"%s\")", encodeDoubleQuote(to.Text()))
 		},
+		pacakges: []string{"widget"},
 	},
 	"*widget.Toolbar": {
 		name: "Toolbar",
@@ -540,6 +561,7 @@ var widgets = map[string]widgetInfo{
 				widget.NewToolbarAction(theme.HelpIcon(), func() { fmt.Println("Clicked on HelpIcon") }),
 			)`
 		},
+		pacakges: []string{"widget", "theme", "fmt"},
 	},
 	"*widget.Tree": {
 		name: "Tree",
@@ -586,6 +608,7 @@ var widgets = map[string]widgetInfo{
 		edit: func(co fyne.CanvasObject) []*widget.FormItem {
 			return []*widget.FormItem{}
 		},
+		pacakges: []string{"widget"},
 	},
 
 	"*fyne.Container": {
@@ -639,6 +662,7 @@ var widgets = map[string]widgetInfo{
 			str.WriteString(")\n")
 			return str.String()
 		},
+		pacakges: []string{"container", "layout"},
 	},
 }
 
