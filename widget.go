@@ -139,6 +139,10 @@ var widgets = map[string]widgetInfo{
 					i.SetResource(icons[selected])
 				}))}
 		},
+		gostring: func(obj fyne.CanvasObject) string {
+			i := obj.(*widget.Icon)
+			return fmt.Sprintf("theme.%s()", iconNameMap[i.Resource.Name()])
+		},
 	},
 	"*widget.Label": {
 		name: "Label",
