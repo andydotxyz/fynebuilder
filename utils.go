@@ -31,7 +31,7 @@ var packageNameMap = map[string]string{
 }
 
 func getPackages() (finalPackageList []string) {
-	for k, _ := range packageList {
+	for k := range packageList {
 		finalPackageList = append(finalPackageList, packageNameMap[k])
 	}
 	sort.Slice(finalPackageList, func(i, j int) bool {
