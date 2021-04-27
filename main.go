@@ -64,7 +64,7 @@ func buildLibrary() fyne.CanvasObject {
 			if selected != nil {
 				c.c.Objects = append(c.c.Objects, wrapContent(selected.create()))
 				var localPackageList = make(map[string]bool)
-				for _, v := range selected.pacakges {
+				for _, v := range selected.packages {
 					localPackageList[v] = true
 				}
 				for k := range packageList {
