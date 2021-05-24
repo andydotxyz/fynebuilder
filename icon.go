@@ -103,15 +103,17 @@ var icons = map[string]fyne.Resource{
 }
 
 // iconNames is an array with the list of names of all the icons
-var iconNames = extractIconNames()
+var iconNames, iconNameMap = extractIconNames()
 
 // extractIconNames returns all the list of names of all the icons from the hashmap `icons`
-func extractIconNames() []string {
+func extractIconNames() ([]string, map[string]string) {
 	var iconNamesFromData = make([]string, len(icons))
+	var iconMapFromData = make(map[string]string, len(icons))
 	i := 0
 	for k := range icons {
 		iconNamesFromData[i] = k
+		iconMapFromData[icons[k].Name()] = k
 		i++
 	}
-	return iconNamesFromData
+	return iconNamesFromData, iconMapFromData
 }
